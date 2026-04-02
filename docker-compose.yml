@@ -1,0 +1,10 @@
+services:
+  imd-automation:
+    build:
+      context: .
+    container_name: imd-automation
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./Download:/app/Download

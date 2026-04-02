@@ -1,0 +1,157 @@
+[
+    {
+        "station": "Adiramapattinam",
+        "maximum_past_24hrs": 32.7,
+        "minimum_past_24hrs": 22.9
+    },
+    {
+        "station": "Chennai",
+        "maximum_past_24hrs": 32.3,
+        "minimum_past_24hrs": 25.1
+    },
+    {
+        "station": "Chennai_AP",
+        "maximum_past_24hrs": 34.3,
+        "minimum_past_24hrs": 24.6
+    },
+    {
+        "station": "Coimbatore_AP",
+        "maximum_past_24hrs": 35.8,
+        "minimum_past_24hrs": 23.8
+    },
+    {
+        "station": "Coonoor",
+        "maximum_past_24hrs": 24.4,
+        "minimum_past_24hrs": 13.4
+    },
+    {
+        "station": "Cuddalore",
+        "maximum_past_24hrs": 32.2,
+        "minimum_past_24hrs": 23.6
+    },
+    {
+        "station": "Dharmapuri",
+        "maximum_past_24hrs": 35.2,
+        "minimum_past_24hrs": 22.0
+    },
+    {
+        "station": "Erode",
+        "maximum_past_24hrs": 37.6,
+        "minimum_past_24hrs": 23.2
+    },
+    {
+        "station": "Kanyakumari",
+        "maximum_past_24hrs": 35.0,
+        "minimum_past_24hrs": 24.4
+    },
+    {
+        "station": "KarurParamathi",
+        "maximum_past_24hrs": 38.0,
+        "minimum_past_24hrs": 23.0
+    },
+    {
+        "station": "Karaikal",
+        "maximum_past_24hrs": 31.4,
+        "minimum_past_24hrs": 24.8
+    },
+    {
+        "station": "Kodaikanal",
+        "maximum_past_24hrs": 21.5,
+        "minimum_past_24hrs": 9.0
+    },
+    {
+        "station": "Madurai_City",
+        "maximum_past_24hrs": 36.8,
+        "minimum_past_24hrs": 22.4
+    },
+    {
+        "station": "Madurai_AP",
+        "maximum_past_24hrs": 38.0,
+        "minimum_past_24hrs": 23.1
+    },
+    {
+        "station": "Nagapattinam",
+        "maximum_past_24hrs": 32.3,
+        "minimum_past_24hrs": 24.5
+    },
+    {
+        "station": "Namakkal",
+        "maximum_past_24hrs": null,
+        "minimum_past_24hrs": null
+    },
+    {
+        "station": "Palayamkottai",
+        "maximum_past_24hrs": 35.2,
+        "minimum_past_24hrs": 25.3
+    },
+    {
+        "station": "Pamban",
+        "maximum_past_24hrs": 33.6,
+        "minimum_past_24hrs": 24.3
+    },
+    {
+        "station": "Parangipettai",
+        "maximum_past_24hrs": 32.0,
+        "minimum_past_24hrs": 23.8
+    },
+    {
+        "station": "Puducherry",
+        "maximum_past_24hrs": 32.2,
+        "minimum_past_24hrs": 24.4
+    },
+    {
+        "station": "Salem",
+        "maximum_past_24hrs": 35.0,
+        "minimum_past_24hrs": 22.9
+    },
+    {
+        "station": "Thanjavur",
+        "maximum_past_24hrs": 35.0,
+        "minimum_past_24hrs": 25.0
+    },
+    {
+        "station": "Thirupattur",
+        "maximum_past_24hrs": 35.4,
+        "minimum_past_24hrs": 22.5
+    },
+    {
+        "station": "Tiruchirappalli_AP",
+        "maximum_past_24hrs": 36.3,
+        "minimum_past_24hrs": 23.6
+    },
+    {
+        "station": "Tiruthani",
+        "maximum_past_24hrs": 34.0,
+        "minimum_past_24hrs": 21.8
+    },
+    {
+        "station": "Tondi",
+        "maximum_past_24hrs": 33.2,
+        "minimum_past_24hrs": 25.2
+    },
+    {
+        "station": "Thoothukudi",
+        "maximum_past_24hrs": null,
+        "minimum_past_24hrs": null
+    },
+    {
+        "station": "Udagamandalam",
+        "maximum_past_24hrs": 21.4,
+        "minimum_past_24hrs": 10.6
+    },
+    {
+        "station": "Valparai",
+        "maximum_past_24hrs": 30.5,
+        "minimum_past_24hrs": 16.5
+    },
+    {
+        "station": "Vellore",
+        "maximum_past_24hrs": 36.9,
+        "minimum_past_24hrs": 22.3
+    },
+    {
+        "station": "*Weather at 0830 hours IST. Other remarks refer to preceding 24 hours. NA-Not avble D-Duststorm l-Lightning d-drizzle m-mist s-snow r-rain h-hail f-fog p-shower z-haze t-thunderstorm tr-rainfall notmeasurable. AP-Airport plus sign omitted when departures above normal.",
+        "maximum_past_24hrs": null,
+        "minimum_past_24hrs": null
+    }
+]

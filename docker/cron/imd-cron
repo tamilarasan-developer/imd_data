@@ -1,0 +1,4 @@
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+30 9 * * * cd /app && /usr/local/bin/python /app/imd_chennai_date.py >> /var/log/imd-cron.log 2>&1

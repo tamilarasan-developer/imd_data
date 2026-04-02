@@ -1,0 +1,50 @@
+[
+    {
+        "cluster": "CHENNAI",
+        "maximum_past_24hrs": 33.3,
+        "minimum_past_24hrs": 24.85,
+        "average": 29.07
+    },
+    {
+        "cluster": "VILLUPURAM",
+        "maximum_past_24hrs": 32.13,
+        "minimum_past_24hrs": 23.93,
+        "average": 28.03
+    },
+    {
+        "cluster": "VELLORE",
+        "maximum_past_24hrs": 36.15,
+        "minimum_past_24hrs": 22.4,
+        "average": 29.27
+    },
+    {
+        "cluster": "ERODE",
+        "maximum_past_24hrs": 35.93,
+        "minimum_past_24hrs": 22.7,
+        "average": 29.31
+    },
+    {
+        "cluster": "TRICHY",
+        "maximum_past_24hrs": 34.58,
+        "minimum_past_24hrs": 24.03,
+        "average": 29.3
+    },
+    {
+        "cluster": "COIMBATORE",
+        "maximum_past_24hrs": 35.8,
+        "minimum_past_24hrs": 23.8,
+        "average": 29.8
+    },
+    {
+        "cluster": "MADURAI",
+        "maximum_past_24hrs": 37.4,
+        "minimum_past_24hrs": 22.75,
+        "average": 30.07
+    },
+    {
+        "cluster": "TIRUNELVELI",
+        "maximum_past_24hrs": 34.3,
+        "minimum_past_24hrs": 24.35,
+        "average": 29.32
+    }
+]
