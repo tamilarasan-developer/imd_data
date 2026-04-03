@@ -38,7 +38,7 @@ def push_cluster_data_to_db(cluster_rows, report_date):
         "host": os.getenv("DB_HOST", "172.16.7.116"),
         "port": os.getenv("DB_PORT", "5432")
     }
-
+  
     insert_sql = """
         INSERT INTO imd_data_chennai (
             date,
