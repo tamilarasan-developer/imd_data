@@ -24,4 +24,4 @@ RUN chmod 0644 /etc/cron.d/imd-cron && crontab /etc/cron.d/imd-cron
 COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-CMD ["/entrypoint.sh"]
+CMD [ "python", "manage.py", "runserver", "0.0.0.0:8000" ]
