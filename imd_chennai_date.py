@@ -1,6 +1,6 @@
 import requests
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 import pdfplumber
 import json
 import psycopg2
@@ -87,10 +87,12 @@ os.makedirs(download_dir, exist_ok=True)
 
 
 # -----------------------------
-# Create Date Folder
+# Create Date Folder (-1 day)
 # -----------------------------
-today = datetime.now().strftime("%Y-%m-%d")
-folder_path = os.path.join(download_dir, today)
+report_date_obj = (datetime.now() - timedelta(days=1)).date()
+report_date_str = report_date_obj.strftime("%Y-%m-%d")
+
+folder_path = os.path.join(download_dir, report_date_str)
 os.makedirs(folder_path, exist_ok=True)
 
 print("📁 Saving to:", folder_path)
@@ -221,7 +223,7 @@ cluster_json_path = os.path.join(folder_path, "cluster_temperature.json")
 temperature_json_path = os.path.join(folder_path, "temperature_24hrs.json")
 
 cluster_output = {
-    "date": today,
+    "date": report_date_str,
     "data": cluster_result
 }
 
@@ -250,7 +252,7 @@ try:
 
     push_cluster_data_to_db(
         cluster_rows,
-        datetime.strptime(today, "%Y-%m-%d").date()
+        report_date_obj
     )
 
     print("✅ DB push completed!")

@@ -282,9 +282,9 @@ class Command(BaseCommand):
     # -----------------------------
     def add_arguments(self, parser):
         parser.add_argument(
-            '--yesterday',
+            '--today',
             action='store_true',
-            help='Fetch only yesterday data'
+            help='Fetch and save using today date (default is yesterday)'
         )
 
     # -----------------------------
@@ -511,7 +511,7 @@ class Command(BaseCommand):
     # -----------------------------
     def handle(self, *args, **options):
 
-        force_yesterday = options.get("yesterday")
+        force_yesterday = not options.get("today")
 
         self.stdout.write("🚀 Starting IMD Data Fetch...")
 
