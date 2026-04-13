@@ -1,4 +1,4 @@
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-0 16 * * * cd /app && /usr/local/bin/python /app/imd_chennai_date.py >> /var/log/imd-cron.log 2>&1
+0 16 * * * cd /app && /usr/local/bin/python manage.py fetch_imd_data --days-back 0 >> /var/log/imd-cron.log 2>&1

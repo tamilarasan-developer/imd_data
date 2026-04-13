@@ -265,6 +265,7 @@
 import os
 import requests
 import json
+import re
 from datetime import datetime, timedelta
 import pdfplumber
 
@@ -282,9 +283,11 @@ class Command(BaseCommand):
     # -----------------------------
     def add_arguments(self, parser):
         parser.add_argument(
-            '--today',
-            action='store_true',
-            help='Fetch and save using today date (default is yesterday)'
+            '--days-back',
+            type=int,
+            default=0,
+            choices=[0, 1, 2, 3, 4],
+            help='Which report link to fetch: 0=today, 1=previous_day1, 2=previous_day2, 3=previous_day3, 4=previous_day4'
         )
 
     # -----------------------------
@@ -342,6 +345,33 @@ class Command(BaseCommand):
 
         return None
 
+    def extract_report_date_from_pdf(self, file_path):
+        """Read observation/report date directly from PDF text."""
+        date_patterns = [
+            r"OF\s+DATE\s*[:\-]?\s*(\d{1,2}[-./]\d{1,2}[-./]\d{4})",
+            r"DATE\s*[:\-]?\s*(\d{1,2}[-./]\d{1,2}[-./]\d{4})",
+        ]
+
+        with pdfplumber.open(file_path) as pdf:
+            max_pages = min(len(pdf.pages), 8)
+            for i in range(max_pages):
+                text = pdf.pages[i].extract_text() or ""
+                upper_text = text.upper()
+
+                for pattern in date_patterns:
+                    match = re.search(pattern, upper_text)
+                    if not match:
+                        continue
+
+                    date_str = match.group(1).replace(".", "-").replace("/", "-")
+                    for fmt in ("%d-%m-%Y", "%d-%m-%y"):
+                        try:
+                            return datetime.strptime(date_str, fmt).date()
+                        except ValueError:
+                            continue
+
+        return None
+
     # -----------------------------
     # Extract rows
     # -----------------------------
@@ -373,51 +403,65 @@ class Command(BaseCommand):
     # -----------------------------
     # Download PDF (FINAL)
     # -----------------------------
-    def download_pdf(self, file_path, force_yesterday=False):
+    def download_pdf(self, file_path, days_back=0):
         base = "https://mausam.imd.gov.in/chennai/mcdata/"
 
-        if force_yesterday:
-            urls = [("yesterday", base + "previous_day1.pdf", 1)]
-        else:
-            urls = [
-                ("today", base + "previous_day.pdf", 0),
-                ("yesterday", base + "previous_day1.pdf", 1),
-            ]
+        urls = [
+    ("today", base + "daily_weather_report.pdf", 0),
+    ("previous_day1", base + "previous_day1.pdf", 1),
+    ("previous_day2", base + "previous_day2.pdf", 2),
+    ("previous_day3", base + "previous_day3.pdf", 3),
+    ("previous_day4", base + "previous_day4.pdf", 4),
+]
 
-        for label, url, day_offset in urls:
-            try:
-                self.stdout.write(f"🌐 Trying {label}: {url}")
+        if days_back < 0 or days_back >= len(urls):
+            self.stdout.write(self.style.ERROR("❌ days-back must be between 0 and 4"))
+            return False, None
 
-                response = requests.get(url, timeout=20)
+        label, url, day_offset = urls[days_back]
 
-                if response.status_code != 200:
-                    self.stdout.write(self.style.WARNING(f"⚠️ {label} not available"))
-                    continue
+        try:
+            self.stdout.write(f"🌐 Trying {label}: {url}")
 
-                content_type = response.headers.get("Content-Type", "")
-                if "pdf" not in content_type.lower():
-                    self.stdout.write(self.style.WARNING(f"⚠️ Not a valid PDF ({label})"))
-                    continue
+            response = requests.get(url, timeout=20)
 
-                # Save file
-                with open(file_path, "wb") as f:
-                    f.write(response.content)
+            if response.status_code != 200:
+                self.stdout.write(self.style.WARNING(f"⚠️ {label} not available"))
+                return False, None
 
-                # Verify file size
-                file_size = os.path.getsize(file_path)
-                if file_size < 5000:
-                    self.stdout.write(self.style.WARNING(f"⚠️ File too small ({label})"))
-                    continue
+            content_type = response.headers.get("Content-Type", "")
+            if "pdf" not in content_type.lower():
+                self.stdout.write(self.style.WARNING(f"⚠️ Not a valid PDF ({label})"))
+                return False, None
 
-                self.stdout.write(self.style.SUCCESS(f"✅ Valid PDF downloaded ({label})"))
-                self.stdout.write(f"📦 File size: {file_size} bytes")
+            # Save file
+            with open(file_path, "wb") as f:
+                f.write(response.content)
 
-                report_date = (datetime.now() - timedelta(days=day_offset)).date()
+            # Verify file size
+            file_size = os.path.getsize(file_path)
+            if file_size < 5000:
+                self.stdout.write(self.style.WARNING(f"⚠️ File too small ({label})"))
+                return False, None
 
-                return True, report_date
+            self.stdout.write(self.style.SUCCESS(f"✅ Valid PDF downloaded ({label})"))
+            self.stdout.write(f"📦 File size: {file_size} bytes")
 
-            except Exception as e:
-                self.stdout.write(self.style.ERROR(f"❌ {label} failed: {e}"))
+            # Source of truth: observation date printed inside the PDF.
+            parsed_report_date = self.extract_report_date_from_pdf(file_path)
+            fallback_report_date = (datetime.now() - timedelta(days=day_offset)).date()
+
+            if parsed_report_date:
+                self.stdout.write(f"📅 Report date from PDF: {parsed_report_date}")
+                report_date = parsed_report_date
+            else:
+                self.stdout.write(self.style.WARNING("⚠️ Could not parse report date from PDF, using fallback offset"))
+                report_date = fallback_report_date
+
+            return True, report_date
+
+        except Exception as e:
+            self.stdout.write(self.style.ERROR(f"❌ {label} failed: {e}"))
 
         return False, None
 
@@ -509,26 +553,45 @@ class Command(BaseCommand):
     # -----------------------------
     # MAIN
     # -----------------------------
+    # -----------------------------
+# MAIN
+# -----------------------------
     def handle(self, *args, **options):
-
-        force_yesterday = not options.get("today")
 
         self.stdout.write("🚀 Starting IMD Data Fetch...")
 
         base_dir = os.getcwd()
 
-        # temp path first
-        temp_file_path = os.path.join(base_dir, "temp_weather.pdf")
+        # ✅ DEFAULT OR USER INPUT
+        days_back = options.get("days_back")
+
+        if days_back is None:
+            days_back = 0   # default = today
+            self.stdout.write("📅 Running for TODAY (days-back: 0)")
+        else:
+            days_back = int(days_back)
+            self.stdout.write(f"📅 Running for days-back: {days_back}")
+
+        # temp path
+        temp_file_path = os.path.join(base_dir, f"temp_weather_{days_back}.pdf")
 
         self.stdout.write("📥 Downloading PDF...")
 
-        success, report_date = self.download_pdf(temp_file_path, force_yesterday)
+        success, report_date = self.download_pdf(temp_file_path, days_back)
 
         if not success:
             self.stdout.write(self.style.ERROR("❌ No PDF available"))
             return
 
-        # ✅ Correct folder using actual date
+        if not report_date:
+            self.stdout.write(
+                self.style.ERROR("❌ Could not determine report date → Skipping")
+            )
+            return
+
+        self.stdout.write(f"📅 Report Date: {report_date}")
+
+        # ✅ Folder using actual report date
         folder_path = os.path.join(base_dir, "Download", str(report_date))
         os.makedirs(folder_path, exist_ok=True)
 
@@ -566,6 +629,20 @@ class Command(BaseCommand):
 
         if not result:
             self.stdout.write(self.style.WARNING("⚠️ No station rows extracted"))
+            return
+
+        has_valid_cluster_data = any(
+            row["maximum_past_24hrs"] is not None or row["minimum_past_24hrs"] is not None
+            for row in cluster_result
+        )
+
+        if not has_valid_cluster_data:
+            self.stdout.write(
+                self.style.ERROR(
+                    "❌ All cluster values are null. Skipping DB save to avoid bad rows."
+                )
+            )
+            return
 
         self.stdout.write("💾 Saving to DB...")
         self.save_to_db(cluster_result, report_date)
